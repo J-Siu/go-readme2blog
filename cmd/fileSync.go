@@ -50,10 +50,10 @@ var fileSyncCmd = &cobra.Command{
 		}
 		helper.Report(fileOut, "fileOut", false, true)
 		if helper.SameDir(fileOut, lib.Flag.FileBlog) && !lib.Flag.Forced {
-			helper.Errs = append(helper.Errs, helper.Err(lib.Flag.FileOut+", "+lib.Flag.FileBlog+lib.TXT_IN_SAME_DIR))
+			helper.Errs.Add(helper.Err(lib.Flag.FileOut + ", " + lib.Flag.FileBlog + lib.TXT_IN_SAME_DIR))
 		}
 		if helper.SameDir(fileOut, lib.Flag.FileReadme) && !lib.Flag.Forced {
-			helper.Errs = append(helper.Errs, helper.Err(lib.Flag.FileOut+", "+lib.Flag.FileReadme+lib.TXT_IN_SAME_DIR))
+			helper.Errs.Add(helper.Err(lib.Flag.FileOut + ", " + lib.Flag.FileReadme + lib.TXT_IN_SAME_DIR))
 		}
 		if helper.Errs.NotEmpty() {
 			return

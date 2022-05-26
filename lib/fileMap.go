@@ -36,7 +36,7 @@ type FileMap map[string]string
 func (self *FileMap) MapFile(dir string) {
 	dirEntry, err := os.ReadDir(dir)
 	if err != nil {
-		helper.Errs = append(helper.Errs, err)
+		helper.Errs.Add(err)
 		return
 	}
 	for _, f := range dirEntry {
@@ -51,7 +51,7 @@ func (self *FileMap) MapFile(dir string) {
 func (self *FileMap) MapDirFile(dir, filename string) {
 	dirEntry, err := os.ReadDir(dir)
 	if err != nil {
-		helper.Errs = append(helper.Errs, err)
+		helper.Errs.Add(err)
 		return
 	}
 	var realName string

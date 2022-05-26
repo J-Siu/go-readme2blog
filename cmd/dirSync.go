@@ -41,10 +41,13 @@ var dirSyncCmd = &cobra.Command{
 - Skip marker(` + lib.Flag.MarkerSkip + `): No sync is performed if skip marker is found in one of the file. Skip marker should be placed above split marker and in its own line.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if helper.SameDir(lib.Flag.DirOut, lib.Flag.DirBlog) && !lib.Flag.Forced {
-			helper.Errs = append(helper.Errs, helper.Err(lib.Flag.DirOut+", "+lib.Flag.DirBlog+lib.TXT_SAME_DIR))
+			helper.Errs.Add(helper.Err(lib.Flag.DirOut + ", " + lib.Flag.DirBlog + lib.TXT_SAME_DIR))
 		}
 		if helper.SameDir(lib.Flag.DirOut, lib.Flag.DirSrc) && !lib.Flag.Forced {
-			helper.Errs = append(helper.Errs, helper.Err(lib.Flag.DirOut+", "+lib.Flag.DirSrc+lib.TXT_SAME_DIR))
+			helper.Errs.Add(helper.Err(lib.Flag.DirOut + ", " + lib.Flag.DirSrc + lib.TXT_SAME_DIR))
+		}
+		if !helper.IsDir(lib.Flag.DirOut) {
+			helper.Errs.Add(helper.Err(lib.Flag.DirOut + lib.TXT_NOT_DIR))
 		}
 		if helper.Errs.NotEmpty() {
 			return

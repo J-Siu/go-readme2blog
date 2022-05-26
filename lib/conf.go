@@ -40,7 +40,7 @@ func (self *TypeConf) Init() {
 	self.File = viper.ConfigFileUsed()
 	var err error = viper.Unmarshal(&self)
 	if err != nil {
-		helper.Errs = append(helper.Errs, err)
+		helper.Errs.Add(err)
 	}
 	helper.ReportDebug(&Conf, "Conf", true, true)
 	helper.ReportDebug(&Flag, "Flag", true, false)

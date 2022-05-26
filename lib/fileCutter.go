@@ -141,7 +141,7 @@ func (self *FileCutter) ReadContent(filename string, readTop bool, readBottom bo
 	}
 
 	if err != nil {
-		helper.Errs = append(helper.Errs, err)
+		helper.Errs.Add(err)
 	}
 
 	return self
@@ -237,7 +237,7 @@ func (self *FileCutter) Save(filename string) *FileCutter {
 	}
 
 	if err != nil {
-		helper.Errs = append(helper.Errs, err)
+		helper.Errs.Add(err)
 	}
 
 	return self

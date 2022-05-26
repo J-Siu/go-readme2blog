@@ -40,7 +40,7 @@ var dirChkCmd = &cobra.Command{
 		for _, d := range args {
 			dirEntry, err := os.ReadDir(d)
 			if err != nil {
-				helper.Errs = append(helper.Errs, err)
+				helper.Errs.Add(err)
 				continue
 			}
 
