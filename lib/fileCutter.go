@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 John, Sing Dao, Siu <john.sd.siu@gmail.com>
+Copyright © 2023 John, Sing Dao, Siu <john.sd.siu@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -51,11 +51,11 @@ func (self *FileCutter) Join(bottom *FileCutter) *FileCutter {
 }
 
 // Read file and split content base on parameters
-//  - If <filename> empty, self.Filename will be used
-//  - If readTop, clear self.Top, save content before split-marker to self.Top
-//  - If readBottom, clear self.Bottom, save content after split-marker to self.Bottom
-//  - Set self.Split = true if split-marker found, set self.SplitLn
-//  - Set self.Skip = true if skip-marker found, clear self.SplitLn, self.Found
+//   - If <filename> empty, self.Filename will be used
+//   - If readTop, clear self.Top, save content before split-marker to self.Top
+//   - If readBottom, clear self.Bottom, save content after split-marker to self.Bottom
+//   - Set self.Split = true if split-marker found, set self.SplitLn
+//   - Set self.Skip = true if skip-marker found, clear self.SplitLn, self.Found
 func (self *FileCutter) ReadContent(filename string, readTop bool, readBottom bool) *FileCutter {
 	var err error = nil
 	var file *os.File
@@ -148,29 +148,29 @@ func (self *FileCutter) ReadContent(filename string, readTop bool, readBottom bo
 }
 
 // Read file and split content
-//  - If <filename> empty, self.Filename will be used
-//  - clear self.Top, save content before split-marker to self.Top
-//  - clear self.Bottom, save content after split-marker to self.Bottom
-//  - Set self.Split = true if split-marker found, set self.SplitLn
-//  - Set self.Skip = true if skip-marker found, clear self.SplitLn, self.Found
+//   - If <filename> empty, self.Filename will be used
+//   - clear self.Top, save content before split-marker to self.Top
+//   - clear self.Bottom, save content after split-marker to self.Bottom
+//   - Set self.Split = true if split-marker found, set self.SplitLn
+//   - Set self.Skip = true if skip-marker found, clear self.SplitLn, self.Found
 func (self *FileCutter) Read(filename string) *FileCutter {
 	return self.ReadContent(filename, true, true)
 }
 
 // Read file and split content
-//  - If <filename> empty, self.Filename will be used
-//  - clear self.Bottom, save content after split-marker to self.Bottom
-//  - Set self.Split = true if split-marker found, set self.SplitLn
-//  - Set self.Skip = true if skip-marker found, clear self.SplitLn, self.Found
+//   - If <filename> empty, self.Filename will be used
+//   - clear self.Bottom, save content after split-marker to self.Bottom
+//   - Set self.Split = true if split-marker found, set self.SplitLn
+//   - Set self.Skip = true if skip-marker found, clear self.SplitLn, self.Found
 func (self *FileCutter) ReadBottom(filename string) *FileCutter {
 	return self.ReadContent(filename, false, true)
 }
 
 // Read file and split content
-//  - If <filename> empty, self.Filename will be used
-//  - clear self.Top, save content before split-marker to self.Top
-//  - Set self.Split = true if split-marker found, set self.SplitLn
-//  - Set self.Skip = true if skip-marker found, clear self.SplitLn, self.Found
+//   - If <filename> empty, self.Filename will be used
+//   - clear self.Top, save content before split-marker to self.Top
+//   - Set self.Split = true if split-marker found, set self.SplitLn
+//   - Set self.Skip = true if skip-marker found, clear self.SplitLn, self.Found
 func (self *FileCutter) ReadTop(filename string) *FileCutter {
 	return self.ReadContent(filename, true, false)
 }
@@ -186,9 +186,9 @@ func (self *FileCutter) Reset() *FileCutter {
 }
 
 // Save split content to file
-//  - If <filename> empty, self.Filename will be used
-//  - Save self.Top, split-maker, self.Bottom
-//  - Not save if self.Top or self.Bottom is nil
+//   - If <filename> empty, self.Filename will be used
+//   - Save self.Top, split-maker, self.Bottom
+//   - Not save if self.Top or self.Bottom is nil
 func (self *FileCutter) Save(filename string) *FileCutter {
 	var err error
 	var file *os.File

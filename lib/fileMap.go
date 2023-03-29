@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 John, Sing Dao, Siu <john.sd.siu@gmail.com>
+Copyright © 2023 John, Sing Dao, Siu <john.sd.siu@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import (
 type FileMap map[string]string
 
 // Create map[simplified file name](file full path)
-//  - create mapping between simplified base file names and full path of the file
+//   - create mapping between simplified base file names and full path of the file
 func (self *FileMap) MapFile(dir string) {
 	dirEntry, err := os.ReadDir(dir)
 	if err != nil {
@@ -47,7 +47,7 @@ func (self *FileMap) MapFile(dir string) {
 }
 
 // Create map[simplified dir name](file full path)
-//  - create mapping between simplified dir names and full path of specific file it contains
+//   - create mapping between simplified dir names and full path of specific file it contains
 func (self *FileMap) MapDirFile(dir, filename string) {
 	dirEntry, err := os.ReadDir(dir)
 	if err != nil {
@@ -67,8 +67,8 @@ func (self *FileMap) MapDirFile(dir, filename string) {
 }
 
 // If self[<name>] and map2[<name>] exist, map3[self[<name>]] = map2[<name>].
-//  - If an index exist in both maps, create a mapping with their values
-//  - Return pointer of new map3
+//   - If an index exist in both maps, create a mapping with their values
+//   - Return pointer of new map3
 func (self *FileMap) Join(map2 *FileMap) *FileMap {
 	var map3 = make(FileMap)
 

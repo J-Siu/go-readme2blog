@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 John, Sing Dao, Siu <john.sd.siu@gmail.com>
+Copyright © 2023 John, Sing Dao, Siu <john.sd.siu@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ func CheckMarker(listSkip, listSplit *FileCutterList, filename string) {
 }
 
 // Create map[blog file full path](repository readme full path)
-//  - map is created if simplified blog name == simplified repository name
+//   - map is created if simplified blog name == simplified repository name
 func DirFileMapInit() {
 	Conf.Blog = make(FileMap)
 	Conf.Blog.MapFile(Flag.DirBlog)
@@ -86,7 +86,7 @@ func ReadmeBlogMapPrint() {
 }
 
 // Create *FileCutter
-//  - Set markers using Flag
+//   - Set markers using Flag
 func FileCutterNew(filename string) *FileCutter {
 	var self FileCutter
 	self.Filename = filename
