@@ -1,4 +1,4 @@
 *.code-workspace
+go-readme2blog
 go.work*
 test-09-az.md
-go-readme2blog

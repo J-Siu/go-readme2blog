@@ -1,5 +1,7 @@
 /*
-Copyright © 2023 John, Sing Dao, Siu <john.sd.siu@gmail.com>
+MIT License
+
+Copyright © 2025 John, Sing Dao, Siu <john.sd.siu@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,10 +33,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+const Version = "v1.0.2"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "go-sync-readme-blog",
-	Short: "Sync Blog with README.md",
+	Use:     "go-sync-readme-blog",
+	Short:   "Sync Blog with README.md",
+	Version: Version,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		lib.Conf.Init()
 	},

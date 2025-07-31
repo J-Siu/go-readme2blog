@@ -1,5 +1,7 @@
 /*
-Copyright © 2023 John, Sing Dao, Siu <john.sd.siu@gmail.com>
+MIT License
+
+Copyright © 2025 John, Sing Dao, Siu <john.sd.siu@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
