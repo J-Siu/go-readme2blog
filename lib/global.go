@@ -31,8 +31,12 @@ import (
 	"github.com/J-Siu/go-helper"
 )
 
-var Conf TypeConf
-var Flag TypeFlag
+var (
+	Conf TypeConf
+	Flag TypeFlag
+)
+
+const Version = "v1.0.2"
 
 const (
 	DEFAULT_MD_EXT       = ".md"
@@ -55,8 +59,7 @@ func init() {
 // Helper functions that are Flag dependent
 
 func CheckMarker(listSkip, listSplit *FileCutterList, filename string) {
-	var fileCutter *FileCutter
-	fileCutter = FileCutterNew(filename).ReadTop("")
+	fileCutter := FileCutterNew(filename).ReadTop("")
 	fileCutter.Top = nil
 	if fileCutter.Skipped {
 		*listSkip = append(*listSkip, fileCutter)

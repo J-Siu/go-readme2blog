@@ -33,13 +33,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-const Version = "v1.0.2"
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "go-sync-readme-blog",
 	Short:   "Sync Blog with README.md",
-	Version: Version,
+	Version: lib.Version,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		lib.Conf.Init()
 	},
