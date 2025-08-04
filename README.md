@@ -5,7 +5,6 @@ Rapid sync between markdown blog with README.md.
 ### Table Of Content
 <!-- TOC -->
 
-- [Table Of Content](#table-of-content)
 - [Features](#features)
 - [Doc](#doc)
 - [Usage](#usage)
@@ -91,6 +90,11 @@ go-readme2blog dir sync --dir-blog ~/code/public/johnsiu.com/content/blog --dir-
 - v1.0.2
   - Fix Github workflows
   - Use Go 1.24.5
+- v1.0.3
+  - Upgrade go-helper to v1.1.8
+  - Fix config logic
+  - Fix debug logic
+  - Fix receiver name
 
 ### License
 

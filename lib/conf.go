@@ -30,20 +30,19 @@ import (
 )
 
 type TypeConf struct {
-	File       string  `json:"file"`
+	FileConf   string  `json:"FileConf"`
 	Blog       FileMap `json:"blog"`
 	Readme     FileMap `json:"readme"`
 	ReadmeBlog FileMap `json:"readmeBlog"`
 }
 
 // Fill in conf struct from viper
-func (self *TypeConf) Init() {
-	helper.Debug = Flag.Debug
-	self.File = viper.ConfigFileUsed()
-	var err error = viper.Unmarshal(&self)
+func (conf *TypeConf) Init() {
+	err := viper.Unmarshal(&conf)
+	prefix := "TypeConf.Init"
+	helper.ReportDebug(conf.FileConf, prefix+":Config file", false, true)
 	if err != nil {
 		helper.Errs.Add(err)
 	}
-	helper.ReportDebug(&Conf, "Conf", true, true)
-	helper.ReportDebug(&Flag, "Flag", true, false)
+	helper.ReportDebug(conf, prefix, false, true)
 }

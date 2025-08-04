@@ -24,7 +24,6 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/J-Siu/go-helper"
@@ -33,12 +32,13 @@ import (
 	"github.com/spf13/viper"
 )
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "go-sync-readme-blog",
 	Short:   "Sync Blog with README.md",
 	Version: lib.Version,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		helper.Debug = lib.Flag.Debug
+		helper.ReportDebug(&lib.Flag, "Flag", false, false)
 		lib.Conf.Init()
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
@@ -64,32 +64,22 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&lib.Flag.NoParallel, "no-parallel", "n", false, "Do not process in parallel")
 	rootCmd.PersistentFlags().BoolVarP(&lib.Flag.NoSkip, "no-skip", "", false, "Ignore skip marker")
 	rootCmd.PersistentFlags().BoolVarP(&lib.Flag.ShowFileList, "show-files", "l", false, "Show file lists")
+	rootCmd.PersistentFlags().StringVarP(&lib.Conf.FileConf, "config", "", lib.DefaultConfFile, "Config file")
 	rootCmd.PersistentFlags().StringVarP(&lib.Flag.DefaultMdExt, "md-ext", "", lib.DEFAULT_MD_EXT, "Markdown extension")
 	rootCmd.PersistentFlags().StringVarP(&lib.Flag.DefaultReadme, "readme", "", lib.DEFAULT_README, "Readme filename")
 	rootCmd.PersistentFlags().StringVarP(&lib.Flag.MarkerSkip, "skip-marker", "", lib.DEFAULT_MARKER_SKIP, "")
 	rootCmd.PersistentFlags().StringVarP(&lib.Flag.MarkerSplit, "split-marker", "", lib.DEFAULT_MARKER_SPLIT, "")
 }
 
-// initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if lib.Conf.File != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(lib.Conf.File)
-	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		// Search config in home directory with name ".go-sync-readme-blog" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigType("json")
-		viper.SetConfigName(".go-sync-readme-blog")
+	viper.SetConfigType("json")
+	if lib.Conf.FileConf == "" {
+		lib.Conf.FileConf = lib.DefaultConfFile
 	}
-
+	viper.SetConfigFile(helper.TildeEnvExpand(lib.Conf.FileConf))
 	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		helper.Report(err.Error(), "", true, true)
+		os.Exit(1)
 	}
 }

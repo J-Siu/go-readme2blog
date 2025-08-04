@@ -36,7 +36,10 @@ var (
 	Flag TypeFlag
 )
 
-const Version = "v1.0.2"
+const (
+	DefaultConfFile = "~/.go-readme2blog.json"
+	Version         = "v1.0.2"
+)
 
 const (
 	DEFAULT_MD_EXT       = ".md"
