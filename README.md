@@ -10,7 +10,6 @@ Rapid sync between markdown blog with README.md.
 - [Usage](#usage)
 - [Repository](#repository)
 - [Contributors](#contributors)
-- [Change Log](#change-log)
 - [License](#license)
 
 <!-- /TOC -->
@@ -81,20 +80,6 @@ go-readme2blog dir sync --dir-blog ~/code/public/johnsiu.com/content/blog --dir-
 ### Contributors
 
 - [John Sing Dao Siu](https://github.com/J-Siu)
-
-### Change Log
-- v1.0.0
-  - Feature complete
-- v1.0.1
-  - Use Go 1.20
-- v1.0.2
-  - Fix Github workflows
-  - Use Go 1.24.5
-- v1.0.3
-  - Upgrade go-helper to v1.1.8
-  - Fix config logic
-  - Fix debug logic
-  - Fix receiver name
 
 ### License
 

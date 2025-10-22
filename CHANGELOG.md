@@ -1,0 +1,12 @@
+- v1.0.0
+  - Feature complete
+- v1.0.1
+  - Use Go 1.20
+- v1.0.2
+  - Fix Github workflows
+  - Use Go 1.24.5
+- v1.0.3
+  - Upgrade go-helper to v1.1.8
+  - Fix config logic
+  - Fix debug logic
+  - Fix receiver name
