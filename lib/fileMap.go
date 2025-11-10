@@ -28,41 +28,49 @@ import (
 	"os"
 	"path"
 
-	"github.com/J-Siu/go-helper"
+	"github.com/J-Siu/go-helper/v2/errs"
+	"github.com/J-Siu/go-helper/v2/ezlog"
+	"github.com/J-Siu/go-helper/v2/file"
 )
 
 type FileMap map[string]string
 
 // Create map[simplified file name](file full path)
 //   - create mapping between simplified base file names and full path of the file
-func (self *FileMap) MapFile(dir string) {
+func (t *FileMap) MapFile(filepath string) {
+	(*t)[file.SimplifyName(filepath)] = filepath
+}
+
+// Create map[simplified file name](file full path) for all files in `dir`
+//   - create mapping between simplified base file names and full path of the file
+func (t *FileMap) MapFileDir(dir string) {
 	dirEntry, err := os.ReadDir(dir)
 	if err != nil {
-		helper.Errs.Add(err)
+		errs.Queue("", err)
 		return
 	}
 	for _, f := range dirEntry {
 		if f.Type().IsRegular() {
-			(*self)[helper.FileSimplifyName(f.Name())] = *helper.FullPathStr(path.Join(dir, f.Name()))
+			(*t)[file.SimplifyName(f.Name())] = *file.FullPathStr(path.Join(dir, f.Name()))
 		}
 	}
 }
 
 // Create map[simplified dir name](file full path)
 //   - create mapping between simplified dir names and full path of specific file it contains
-func (self *FileMap) MapDirFile(dir, filename string) {
+func (t *FileMap) MapDirFile(dir, filename string) {
 	dirEntry, err := os.ReadDir(dir)
 	if err != nil {
-		helper.Errs.Add(err)
+		errs.Queue("", err)
 		return
 	}
 	var realName string
 	for _, d := range dirEntry {
 		if d.Type().IsDir() {
 			// Get real filename inside dir
-			realName = helper.FileInDir(path.Join(dir, d.Name()), filename)
+			realName = file.InDir(path.Join(dir, d.Name()), filename)
 			if realName != "" {
-				(*self)[helper.FileSimplifyName(d.Name())] = *helper.FullPathStr(path.Join(dir, d.Name(), realName))
+				(*t)[file.SimplifyName(d.Name())] = *file.FullPathStr(path.Join(dir, d.Name(), realName))
 			}
 		}
 	}
@@ -71,14 +79,21 @@ func (self *FileMap) MapDirFile(dir, filename string) {
 // If self[<name>] and map2[<name>] exist, map3[self[<name>]] = map2[<name>].
 //   - If an index exist in both maps, create a mapping with their values
 //   - Return pointer of new map3
-func (self *FileMap) Join(map2 *FileMap) *FileMap {
+func (t *FileMap) Join(map2 *FileMap) *FileMap {
 	var map3 = make(FileMap)
 
-	for name1, value1 := range *self {
+	for name1, value1 := range *t {
 		if value2, exist := (*map2)[name1]; exist {
 			map3[value1] = value2
 		}
 	}
 
 	return &map3
+}
+
+func (t *FileMap) Dump() *FileMap {
+	for k, v := range *t {
+		ezlog.Log().N(k).M(v).Out()
+	}
+	return t
 }

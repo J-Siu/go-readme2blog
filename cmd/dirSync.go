@@ -21,11 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 package cmd
 
 import (
-	"github.com/J-Siu/go-helper"
-	"github.com/J-Siu/go-readme2blog/lib"
+	"errors"
+
+	"github.com/J-Siu/go-helper/v2/errs"
+	"github.com/J-Siu/go-helper/v2/file"
+	"github.com/J-Siu/go-readme2blog/global"
+	"github.com/J-Siu/go-readme2blog/txt"
 	"github.com/spf13/cobra"
 )
 
@@ -38,33 +43,33 @@ var dirSyncCmd = &cobra.Command{
 
 - Mapping is created between blog filenames and project folder names.
 
-- Split marker(` + lib.Flag.MarkerSplit + `): Matching pair will have blog top part above split marker and ` + lib.Flag.DefaultReadme + ` part below splitter join together and put into output folder with blog filename. The pair is skipped if split marker is not found in one of the file. Split marker need to be in its own line.
+- Split marker(` + global.Conf.MarkerSplit + `): Matching pair will have blog top part above split marker and ` + global.DEFAULT_README + ` part below splitter join together and put into output folder with blog filename. The pair is skipped if split marker is not found in one of the file. Split marker need to be in its own line.
 
-- Skip marker(` + lib.Flag.MarkerSkip + `): No sync is performed if skip marker is found in one of the file. Skip marker should be placed above split marker and in its own line.`,
+- Skip marker(` + global.Conf.MarkerSkip + `): No sync is performed if skip marker is found in one of the file. Skip marker should be placed above split marker and in its own line.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if helper.SameDir(lib.Flag.DirOut, lib.Flag.DirBlog) && !lib.Flag.Forced {
-			helper.Errs.Add(helper.Err(lib.Flag.DirOut + ", " + lib.Flag.DirBlog + lib.TXT_SAME_DIR))
+		if file.SameDir(global.Flag.DirOut, global.Flag.DirBlog) && !global.Flag.Forced {
+			errs.Queue("", errors.New(global.Flag.DirOut+", "+global.Flag.DirBlog+txt.SAME_DIR))
 		}
-		if helper.SameDir(lib.Flag.DirOut, lib.Flag.DirSrc) && !lib.Flag.Forced {
-			helper.Errs.Add(helper.Err(lib.Flag.DirOut + ", " + lib.Flag.DirSrc + lib.TXT_SAME_DIR))
+		if file.SameDir(global.Flag.DirOut, global.Flag.DirSrc) && !global.Flag.Forced {
+			errs.Queue("", errors.New(global.Flag.DirOut+", "+global.Flag.DirSrc+txt.SAME_DIR))
 		}
-		if !helper.IsDir(lib.Flag.DirOut) {
-			helper.Errs.Add(helper.Err(lib.Flag.DirOut + lib.TXT_NOT_DIR))
+		if !file.IsDir(global.Flag.DirOut) {
+			errs.Queue("", errors.New(global.Flag.DirOut+txt.NOT_DIR))
 		}
-		if helper.Errs.NotEmpty() {
+		if errs.NotEmpty() {
 			return
 		}
 
-		lib.DirFileMapInit()
-		lib.MappedFileSync()
+		mapReadmeBlog := global.MapReadmeBlog(global.Flag.DirBlog, global.Flag.DirSrc)
+		global.MapReadmeBlogSync(mapReadmeBlog, global.Flag.DirOut)
 	},
 }
 
 func init() {
 	dirCmd.AddCommand(dirSyncCmd)
-	dirSyncCmd.Flags().StringVarP(&lib.Flag.DirBlog, "dir-blog", "b", "", "Markdown directory")
-	dirSyncCmd.Flags().StringVarP(&lib.Flag.DirOut, "dir-out", "o", "", "Output directory")
-	dirSyncCmd.Flags().StringVarP(&lib.Flag.DirSrc, "dir-src", "s", "", "Source directory")
+	dirSyncCmd.Flags().StringVarP(&global.Flag.DirBlog, "dir-blog", "b", "", "Markdown directory")
+	dirSyncCmd.Flags().StringVarP(&global.Flag.DirOut, "dir-out", "o", "", "Output directory")
+	dirSyncCmd.Flags().StringVarP(&global.Flag.DirSrc, "dir-src", "s", "", "Source directory")
 	dirSyncCmd.MarkFlagRequired("dir-blog")
 	dirSyncCmd.MarkFlagRequired("dir-out")
 	dirSyncCmd.MarkFlagRequired("dir-src")

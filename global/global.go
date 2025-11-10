@@ -22,19 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package lib
+package global
 
-// Holding all flags from command line
-type TypeFlag struct {
-	Debug bool `json:"Debug"` // Enable debug output
+import "github.com/J-Siu/go-readme2blog/lib"
 
-	FilesBlog   []string `json:"FileBlog"`
-	FilesReadme []string `json:"FileReadme"`
+var (
+	Conf lib.TypeConf
+	Flag lib.TypeFlag
+)
 
-	DirBlog string `json:"DirBlog"`
-	DirOut  string `json:"DirOut"`
-	DirSrc  string `json:"DirSrc"`
-
-	Forced bool `json:"Forced"` // Allow overwriting original file
-	NoSkip bool `json:"NoSkip"` // Flag for ignoring skip marker
-}
+const (
+	DEFAULT_MD_EXT       = ".md"
+	DEFAULT_README       = "README.md"
+	DEFAULT_MARKER_SKIP  = "<!--skip-sync-->"
+	DEFAULT_MARKER_SPLIT = "<!--more-->"
+)

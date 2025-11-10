@@ -21,12 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 package cmd
 
 import (
-	"path"
-
-	"github.com/J-Siu/go-helper"
+	"github.com/J-Siu/go-readme2blog/global"
 	"github.com/J-Siu/go-readme2blog/lib"
 	"github.com/spf13/cobra"
 )
@@ -40,40 +39,33 @@ var fileSyncCmd = &cobra.Command{
 
 - If output is directory, blog filename will be used.
 
-- Split marker(` + lib.Flag.MarkerSplit + `): Blog file top part above split marker and readme file below splitter join together and put into output file. The pair is skipped if split marker is not found in one of the file. Split marker need to be in its own line.
+- Split marker(` + global.Conf.MarkerSplit + `): Blog file top part above split marker and readme file below splitter join together and put into output file. The pair is skipped if split marker is not found in one of the file. Split marker need to be in its own line.
 
-- Skip marker(` + lib.Flag.MarkerSkip + `): No sync is performed if skip marker is found in one of the file. Skip marker need to be placed above split marker and in its own line.`,
+- Skip marker(` + global.Conf.MarkerSkip + `): No sync is performed if skip marker is found in one of the file. Skip marker need to be placed above split marker and in its own line.`,
+	PreRun: func(cmd *cobra.Command, args []string) {},
 	Run: func(cmd *cobra.Command, args []string) {
-		var fileOut string
-		if helper.IsDir(lib.Flag.FileOut) {
-			fileOut = path.Join(lib.Flag.FileOut, path.Base(lib.Flag.FileBlog))
-		} else {
-			fileOut = lib.Flag.FileOut
+		var (
+			mapBlog   = make(lib.FileMap)
+			mapReadme = make(lib.FileMap)
+		)
+		for _, f := range global.Flag.FilesBlog {
+			mapBlog.MapFile(f)
 		}
-		helper.Report(fileOut, "fileOut", false, true)
-		if helper.SameDir(fileOut, lib.Flag.FileBlog) && !lib.Flag.Forced {
-			helper.Errs.Add(helper.Err(lib.Flag.FileOut + ", " + lib.Flag.FileBlog + lib.TXT_IN_SAME_DIR))
+		for _, f := range global.Flag.FilesReadme {
+			mapReadme.MapFile(f)
 		}
-		if helper.SameDir(fileOut, lib.Flag.FileReadme) && !lib.Flag.Forced {
-			helper.Errs.Add(helper.Err(lib.Flag.FileOut + ", " + lib.Flag.FileReadme + lib.TXT_IN_SAME_DIR))
-		}
-		if helper.Errs.NotEmpty() {
-			return
-		}
-
-		var newBlog *lib.FileCutter = lib.FileCutterNew("").ReadTop(lib.Flag.FileBlog).ReadBottom(lib.Flag.FileReadme)
-		if helper.Errs.Empty() && !newBlog.Skipped {
-			newBlog.Save(fileOut)
+		if len(mapBlog) > 0 && len(mapReadme) > 0 {
+			mapReadme.Join(&mapBlog)
 		}
 	},
 }
 
 func init() {
-	fileSyncCmd.Flags().StringVarP(&lib.Flag.FileOut, "out", "o", "", "Output file or directory")
-	fileSyncCmd.Flags().StringVarP(&lib.Flag.FileBlog, "blog", "b", "", "Blog file")
-	fileSyncCmd.Flags().StringVarP(&lib.Flag.FileReadme, "readme", "r", "", "Readme file")
+	fileSyncCmd.Flags().StringVarP(&global.Flag.DirOut, "dir-out", "o", "", "Output directory")
+	fileSyncCmd.Flags().StringArrayVarP(&global.Flag.FilesBlog, "blog", "b", nil, "Blog file")
+	fileSyncCmd.Flags().StringArrayVarP(&global.Flag.FilesReadme, "readme", "r", nil, "Readme file")
 	fileSyncCmd.MarkFlagRequired("blog")
-	fileSyncCmd.MarkFlagRequired("out")
+	fileSyncCmd.MarkFlagRequired("dir-out")
 	fileSyncCmd.MarkFlagRequired("readme")
 	fileCmd.AddCommand(fileSyncCmd)
 }

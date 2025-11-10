@@ -22,19 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package lib
+package global
 
-// Holding all flags from command line
-type TypeFlag struct {
-	Debug bool `json:"Debug"` // Enable debug output
-
-	FilesBlog   []string `json:"FileBlog"`
-	FilesReadme []string `json:"FileReadme"`
-
-	DirBlog string `json:"DirBlog"`
-	DirOut  string `json:"DirOut"`
-	DirSrc  string `json:"DirSrc"`
-
-	Forced bool `json:"Forced"` // Allow overwriting original file
-	NoSkip bool `json:"NoSkip"` // Flag for ignoring skip marker
-}
+const (
+	Version = "v1.1.0"
+)

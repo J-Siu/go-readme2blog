@@ -21,10 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 package cmd
 
 import (
-	"github.com/J-Siu/go-readme2blog/lib"
+	"github.com/J-Siu/go-readme2blog/global"
 	"github.com/spf13/cobra"
 )
 
@@ -35,15 +36,15 @@ var dirListCmd = &cobra.Command{
 	Short:   "List paring result",
 	Long:    `List paring result.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		lib.DirFileMapInit()
-		lib.ReadmeBlogMapPrint()
+		mapReadmeBlog := global.MapReadmeBlog(global.Flag.DirBlog, global.Flag.DirSrc)
+		mapReadmeBlog.Dump()
 	},
 }
 
 func init() {
 	dirCmd.AddCommand(dirListCmd)
-	dirListCmd.Flags().StringVarP(&lib.Flag.DirBlog, "dir-blog", "b", "", "Markdown directory")
-	dirListCmd.Flags().StringVarP(&lib.Flag.DirSrc, "dir-src", "s", "", "Source directory")
+	dirListCmd.Flags().StringVarP(&global.Flag.DirBlog, "dir-blog", "b", "", "Markdown directory")
+	dirListCmd.Flags().StringVarP(&global.Flag.DirSrc, "dir-src", "s", "", "Source directory")
 	dirListCmd.MarkFlagRequired("dir-blog")
 	dirListCmd.MarkFlagRequired("dir-src")
 }

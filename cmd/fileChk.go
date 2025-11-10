@@ -21,26 +21,43 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 package cmd
 
 import (
-	"github.com/J-Siu/go-helper"
-	"github.com/J-Siu/go-readme2blog/lib"
+	"github.com/J-Siu/go-helper/v2/array"
+	"github.com/J-Siu/go-helper/v2/ezlog"
+	"github.com/J-Siu/go-readme2blog/global"
 	"github.com/spf13/cobra"
 )
 
-// fileChkCmd represents the fileChk command
 var fileChkCmd = &cobra.Command{
 	Use:     "check <file ...>",
 	Aliases: []string{"c"},
 	Short:   "Check for skip and split marker",
 	Run: func(cmd *cobra.Command, args []string) {
-		var listSkip, listSplit lib.FileCutterList
+		var (
+			listNoMarker,
+			listSkip,
+			listSplit array.Array[string]
+		)
 		for _, f := range args {
-			lib.CheckMarker(&listSkip, &listSplit, f)
+			hasSkip, hasSplit, e := global.ChkMarker(f)
+			if e == nil {
+				if hasSkip {
+					listSkip.Add(f)
+				}
+				if hasSplit {
+					listSplit.Add(f)
+				}
+				if !hasSkip && !hasSplit {
+					listNoMarker.Add(f)
+				}
+			}
 		}
-		helper.Report(listSkip.GetNames(), "Have skip marker", true, false)
-		helper.Report(listSplit.GetNames(), "Have split marker", true, false)
+		ezlog.Log().Se().Lp(false).N("Skip").Lm(&listSkip).Out()
+		ezlog.Log().Se().Lp(false).N("Split").Lm(&listSplit).Out()
+		ezlog.Log().Se().Lp(false).N("No Marker").Lm(&listNoMarker).Out()
 	},
 }
 

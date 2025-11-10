@@ -21,14 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 package cmd
 
 import (
 	"os"
 	"path"
 
-	"github.com/J-Siu/go-helper"
-	"github.com/J-Siu/go-readme2blog/lib"
+	"github.com/J-Siu/go-helper/v2/array"
+	"github.com/J-Siu/go-helper/v2/errs"
+	"github.com/J-Siu/go-helper/v2/ezlog"
+	"github.com/J-Siu/go-readme2blog/global"
 	"github.com/spf13/cobra"
 )
 
@@ -36,22 +39,29 @@ import (
 var dirChkCmd = &cobra.Command{
 	Use:     "check <directory ...>",
 	Aliases: []string{"c"},
-	Short:   "Check for skip and split marker for all files with extension " + lib.Flag.DefaultMdExt,
+	Short:   "Check for skip and split marker for all files with extension " + global.DEFAULT_MD_EXT,
 	Run: func(cmd *cobra.Command, args []string) {
-		var listSkip, listSplit lib.FileCutterList
+		var listSkip, listSplit array.Array[string]
 		for _, d := range args {
 			dirEntry, err := os.ReadDir(d)
 			if err != nil {
-				helper.Errs.Add(err)
+				errs.Queue("", err)
 				continue
 			}
 
 			for _, f := range dirEntry {
-				lib.CheckMarker(&listSkip, &listSplit, path.Join(d, f.Name()))
+				filePath := path.Join(d, f.Name())
+				hasSkip, hasSplit, _ := global.ChkMarker(filePath)
+				if hasSkip {
+					listSkip.Add(filePath)
+				}
+				if hasSplit {
+					listSplit.Add(filePath)
+				}
 			}
 		}
-		helper.Report(listSkip.GetNames(), "Have skip marker", true, false)
-		helper.Report(listSplit.GetNames(), "Have split marker", true, false)
+		ezlog.Log().N("Have skip marker").Lm(listSkip).Se().Out()
+		ezlog.Log().N("Have split marker").Lm(listSplit).Se().Out()
 	},
 }
 

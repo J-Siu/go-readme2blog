@@ -21,30 +21,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 package cmd
 
 import (
 	"os"
 
-	"github.com/J-Siu/go-helper"
+	"github.com/J-Siu/go-helper/v2/errs"
+	"github.com/J-Siu/go-helper/v2/ezlog"
+	"github.com/J-Siu/go-readme2blog/global"
 	"github.com/J-Siu/go-readme2blog/lib"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "go-sync-readme-blog",
+	Use:     "go-readme2blog",
 	Short:   "Sync Blog with README.md",
-	Version: lib.Version,
+	Version: global.Version,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		helper.Debug = lib.Flag.Debug
-		helper.ReportDebug(&lib.Flag, "Flag", false, false)
-		lib.Conf.Init()
+		ezlog.SetLogLevel(ezlog.ERR)
+		if global.Flag.Debug {
+			ezlog.SetLogLevel(ezlog.DEBUG)
+		}
+		ezlog.Debug().N("Version").M(global.Version).Ln("Flag").M(&global.Flag).Out()
+		global.Conf.New()
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
-		if !lib.Flag.NoError {
-			helper.Report(helper.Warns, "Warning", true, false)
-			helper.Report(helper.Errs, "Error", true, false)
+		if errs.NotEmpty() {
+			ezlog.Err().M(errs.Errs).Out()
 		}
 	},
 }
@@ -57,29 +61,10 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().BoolVarP(&lib.Flag.Debug, "debug", "d", false, "Enable debug output")
-	rootCmd.PersistentFlags().BoolVarP(&lib.Flag.Forced, "force", "F", false, "Enable overwriting original file")
-	rootCmd.PersistentFlags().BoolVarP(&lib.Flag.NoError, "no-error", "", false, "Do not print error")
-	rootCmd.PersistentFlags().BoolVarP(&lib.Flag.NoParallel, "no-parallel", "n", false, "Do not process in parallel")
-	rootCmd.PersistentFlags().BoolVarP(&lib.Flag.NoSkip, "no-skip", "", false, "Ignore skip marker")
-	rootCmd.PersistentFlags().BoolVarP(&lib.Flag.ShowFileList, "show-files", "l", false, "Show file lists")
-	rootCmd.PersistentFlags().StringVarP(&lib.Conf.FileConf, "config", "", lib.DefaultConfFile, "Config file")
-	rootCmd.PersistentFlags().StringVarP(&lib.Flag.DefaultMdExt, "md-ext", "", lib.DEFAULT_MD_EXT, "Markdown extension")
-	rootCmd.PersistentFlags().StringVarP(&lib.Flag.DefaultReadme, "readme", "", lib.DEFAULT_README, "Readme filename")
-	rootCmd.PersistentFlags().StringVarP(&lib.Flag.MarkerSkip, "skip-marker", "", lib.DEFAULT_MARKER_SKIP, "")
-	rootCmd.PersistentFlags().StringVarP(&lib.Flag.MarkerSplit, "split-marker", "", lib.DEFAULT_MARKER_SPLIT, "")
-}
-
-func initConfig() {
-	viper.SetConfigType("json")
-	if lib.Conf.FileConf == "" {
-		lib.Conf.FileConf = lib.DefaultConfFile
-	}
-	viper.SetConfigFile(helper.TildeEnvExpand(lib.Conf.FileConf))
-	viper.AutomaticEnv() // read in environment variables that match
-	if err := viper.ReadInConfig(); err != nil {
-		helper.Report(err.Error(), "", true, true)
-		os.Exit(1)
-	}
+	rootCmd.PersistentFlags().BoolVarP(&global.Flag.Debug, "debug", "d", false, "Enable debug output")
+	rootCmd.PersistentFlags().BoolVarP(&global.Flag.Forced, "force", "F", false, "Enable overwriting original file")
+	rootCmd.PersistentFlags().BoolVarP(&global.Flag.NoSkip, "no-skip", "", false, "Ignore skip marker")
+	rootCmd.PersistentFlags().StringVarP(&global.Conf.FileConf, "config", "", lib.Default.FileConf, "Config file")
+	rootCmd.PersistentFlags().StringVarP(&global.Conf.MarkerSkip, "skip-marker", "", global.DEFAULT_MARKER_SKIP, "")
+	rootCmd.PersistentFlags().StringVarP(&global.Conf.MarkerSplit, "split-marker", "", global.DEFAULT_MARKER_SPLIT, "")
 }

@@ -25,24 +25,59 @@ THE SOFTWARE.
 package lib
 
 import (
-	"github.com/J-Siu/go-helper"
+	"github.com/J-Siu/go-helper/v2/basestruct"
+	"github.com/J-Siu/go-helper/v2/ezlog"
+	"github.com/J-Siu/go-helper/v2/file"
 	"github.com/spf13/viper"
 )
 
+var Default = TypeConf{
+	FileConf: "~/.go-readme2blog.json",
+}
+
 type TypeConf struct {
-	FileConf   string  `json:"FileConf"`
-	Blog       FileMap `json:"blog"`
-	Readme     FileMap `json:"readme"`
-	ReadmeBlog FileMap `json:"readmeBlog"`
+	*basestruct.Base
+	FileConf    string `json:"FileConf"`
+	MarkerSkip  string `json:"MarkerSkip"`  // skip marker
+	MarkerSplit string `json:"MarkerSplit"` // split marker
 }
 
 // Fill in conf struct from viper
-func (conf *TypeConf) Init() {
-	err := viper.Unmarshal(&conf)
-	prefix := "TypeConf.Init"
-	helper.ReportDebug(conf.FileConf, prefix+":Config file", false, true)
-	if err != nil {
-		helper.Errs.Add(err)
+func (t *TypeConf) New() {
+	t.Base = new(basestruct.Base)
+	t.MyType = "TypeConf"
+	prefix := t.MyType + ".New"
+	t.Initialized = true
+
+	t.setDefault()
+	ezlog.Debug().N(prefix).N("Default").Lm(t).Out()
+
+	t.readFileConf()
+	ezlog.Debug().N(prefix).N("Raw").Lm(t).Out()
+
+	t.expand()
+	ezlog.Debug().N(prefix).N("Expand").Lm(t).Out()
+}
+
+func (t *TypeConf) readFileConf() {
+	// prefix := t.MyType + ".readFileConf"
+
+	viper.SetConfigType("json")
+	viper.SetConfigFile(file.TildeEnvExpand(t.FileConf))
+	viper.AutomaticEnv()
+	t.Err = viper.ReadInConfig()
+
+	if t.Err == nil {
+		t.Err = viper.Unmarshal(&t)
 	}
-	helper.ReportDebug(conf, prefix, false, true)
+}
+
+func (t *TypeConf) setDefault() {
+	if t.FileConf == "" {
+		t.FileConf = Default.FileConf
+	}
+}
+
+func (t *TypeConf) expand() {
+	t.FileConf = file.TildeEnvExpand(t.FileConf)
 }

@@ -10,3 +10,6 @@
   - Fix config logic
   - Fix debug logic
   - Fix receiver name
+- v1.1.0
+  - upgrade go-helper/v2
+  - simplify internal logic/flow
