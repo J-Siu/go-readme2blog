@@ -41,7 +41,11 @@ var dirChkCmd = &cobra.Command{
 	Aliases: []string{"c"},
 	Short:   "Check for skip and split marker for all files with extension " + global.DEFAULT_MD_EXT,
 	Run: func(cmd *cobra.Command, args []string) {
-		var listSkip, listSplit array.Array[string]
+		var (
+			listNoMarker,
+			listSkip,
+			listSplit array.Array[string]
+		)
 		for _, d := range args {
 			dirEntry, err := os.ReadDir(d)
 			if err != nil {
@@ -58,10 +62,14 @@ var dirChkCmd = &cobra.Command{
 				if hasSplit {
 					listSplit.Add(filePath)
 				}
+				if !hasSkip && !hasSplit {
+					listNoMarker.Add(filePath)
+				}
 			}
 		}
-		ezlog.Log().N("Have skip marker").Lm(listSkip).Se().Out()
-		ezlog.Log().N("Have split marker").Lm(listSplit).Se().Out()
+		ezlog.Log().Se().Lp(false).N("Skip").Lm(&listSkip).Out()
+		ezlog.Log().Se().Lp(false).N("Split").Lm(&listSplit).Out()
+		ezlog.Log().Se().Lp(false).N("No Marker").Lm(&listNoMarker).Out()
 	},
 }
 

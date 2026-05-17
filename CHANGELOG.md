@@ -13,3 +13,5 @@
 - v1.1.0
   - upgrade go-helper/v2
   - simplify internal logic/flow
+- v1.1.1
+  - update go-helper/v2

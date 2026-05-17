@@ -41,17 +41,17 @@ var fileChkCmd = &cobra.Command{
 			listSkip,
 			listSplit array.Array[string]
 		)
-		for _, f := range args {
-			hasSkip, hasSplit, e := global.ChkMarker(f)
+		for _, filePath := range args {
+			hasSkip, hasSplit, e := global.ChkMarker(filePath)
 			if e == nil {
 				if hasSkip {
-					listSkip.Add(f)
+					listSkip.Add(filePath)
 				}
 				if hasSplit {
-					listSplit.Add(f)
+					listSplit.Add(filePath)
 				}
 				if !hasSkip && !hasSplit {
-					listNoMarker.Add(f)
+					listNoMarker.Add(filePath)
 				}
 			}
 		}

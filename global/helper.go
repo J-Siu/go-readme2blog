@@ -18,8 +18,8 @@ func ChkMarker(filePath string) (hasSkip, hasSplit bool, e error) {
 	)
 	content, e = file.ReadStrArray(filePath)
 	if e == nil {
-		hasSkip = str.ArrayContains(content, &Conf.MarkerSkip, false)
-		hasSplit = str.ArrayContains(content, &Conf.MarkerSplit, false)
+		hasSkip = str.ArrayContains(content, Conf.MarkerSkip, false)
+		hasSplit = str.ArrayContains(content, Conf.MarkerSplit, false)
 	}
 	return hasSkip, hasSplit, e
 }

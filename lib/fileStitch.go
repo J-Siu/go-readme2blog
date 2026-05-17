@@ -101,13 +101,13 @@ func (t *FileStitch) Run() *FileStitch {
 			// ezlog.Debug().Nn(prefix).Nn("contentBottom").M(contentBottom).Out()
 			// ezlog.Debug().Nn(prefix).Nn("contentTop").M(contentTop).Out()
 			// This is not efficient, but we are dealing with file size < M byte
-			if str.ArrayContains(contentBottom, t.MarkerSkip, false) {
+			if str.ArrayContains(contentBottom, *t.MarkerSkip, false) {
 				ezlog.Debug().N(prefix).N("SKIP").N("Skip marker found").M(t.FileBottom).Out()
-			} else if str.ArrayContains(contentTop, t.MarkerSkip, false) {
+			} else if str.ArrayContains(contentTop, *t.MarkerSkip, false) {
 				ezlog.Debug().N(prefix).N("SKIP").N("Skip marker found").M(t.FileTop).Out()
-			} else if !str.ArrayContains(contentBottom, t.MarkerSplit, false) {
+			} else if !str.ArrayContains(contentBottom, *t.MarkerSplit, false) {
 				ezlog.Debug().N(prefix).N("SKIP").N("Split marker not found").M(t.FileBottom).Out()
-			} else if !str.ArrayContains(contentTop, t.MarkerSplit, false) {
+			} else if !str.ArrayContains(contentTop, *t.MarkerSplit, false) {
 				ezlog.Debug().N(prefix).N("SKIP").N("Split marker not found").M(t.FileTop).Out()
 			} else {
 				// stich - top from top file
